@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  background: #0a0a14;
+  overflow: hidden;
+}
+
+/* ── Header ── */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: rgba(15, 15, 26, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  flex-shrink: 0;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(168, 85, 247, 0.25));
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.brand-icon svg {
+  width: 20px;
+  height: 20px;
+  color: #a5b4fc;
+}
+
+.brand-title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  background: linear-gradient(135deg, #e0e7ff, #a5b4fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.header-subtitle {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(165, 180, 252, 0.45);
+  letter-spacing: 0.3px;
+  margin: 0;
+}
+
+/* ── Main Content ── */
+.app-main {
+  flex: 1;
+  padding: 16px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 10px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .brand-title {
+    font-size: 18px;
+  }
+
+  .header-subtitle {
+    font-size: 11px;
+  }
+
+  .app-main {
+    padding: 10px;
+  }
+}

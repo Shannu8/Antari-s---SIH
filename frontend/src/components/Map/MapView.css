@@ -1,0 +1,565 @@
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(99, 102, 241, 0.08);
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+  background: #0f0f1a;
+}
+
+/* ── Coordinate Display (bottom-left, follows mouse) ── */
+.coordinate-display {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(15, 15, 26, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+  pointer-events: none;
+  animation: coordFadeIn 0.2s ease-out;
+}
+
+@keyframes coordFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.coord-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.coord-label {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: rgba(165, 180, 252, 0.6);
+}
+
+.coord-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: #e0e7ff;
+  letter-spacing: 0.5px;
+}
+
+.coord-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Map Info Panel (top-left) ── */
+.map-info-panel {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(15, 15, 26, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 10px 14px;
+  pointer-events: none;
+}
+
+.map-info-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.map-info-icon {
+  width: 14px;
+  height: 14px;
+  color: rgba(165, 180, 252, 0.7);
+  flex-shrink: 0;
+}
+
+.map-info-text {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(224, 231, 255, 0.8);
+  letter-spacing: 0.3px;
+}
+
+/* ── Location Control Group (top-right next to zoom controls) ── */
+.location-control-group {
+  position: absolute;
+  top: 16px;
+  right: 64px;
+  z-index: 1000;
+  display: flex;
+  background: rgba(15, 15, 26, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.location-btn.active {
+  color: #818cf8;
+  background: rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+}
+
+.location-btn.following {
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(165, 180, 252, 0.3);
+  border-top-color: #818cf8;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Location Information Panel (bottom-right / mid-floating) ── */
+.location-info-panel {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 1000;
+  width: 280px;
+  background: rgba(15, 15, 26, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(99, 102, 241, 0.15);
+  animation: panelSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.location-info-panel.error {
+  border-color: rgba(248, 113, 113, 0.4);
+}
+
+@keyframes panelSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.location-info-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pulse-green {
+  background: #34d399;
+  box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7);
+  animation: pulseDot 1.8s infinite;
+}
+
+.pulse-yellow {
+  background: #fbbf24;
+  box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7);
+  animation: pulseDot 1.8s infinite;
+}
+
+.pulse-blue {
+  background: #60a5fa;
+  box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.7);
+  animation: pulseDot 1.2s infinite;
+}
+
+.dot-red {
+  background: #f87171;
+}
+
+@keyframes pulseDot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(52, 211, 153, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0);
+  }
+}
+
+.status-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #e0e7ff;
+  letter-spacing: 0.2px;
+}
+
+.location-close-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+  transition: color 0.15s;
+}
+
+.location-close-btn:hover {
+  color: #f87171;
+}
+
+.location-error-text {
+  font-size: 12px;
+  color: #fca5a5;
+  line-height: 1.4;
+}
+
+.location-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.loc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.loc-grid-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.loc-meta-label {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: rgba(165, 180, 252, 0.6);
+  letter-spacing: 0.5px;
+}
+
+.loc-meta-val {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: #e0e7ff;
+}
+
+.recenter-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 12px;
+  background: rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: 8px;
+  color: #a5b4fc;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.recenter-btn:hover {
+  background: rgba(99, 102, 241, 0.35);
+  color: #ffffff;
+  border-color: rgba(129, 140, 248, 0.6);
+}
+
+/* ── Custom Vessel Location Marker Styling ── */
+.vessel-location-marker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vessel-marker-core {
+  position: relative;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.9),
+    0 4px 12px rgba(79, 70, 229, 0.6);
+}
+
+.vessel-marker-pulse {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  margin-top: -22px;
+  margin-left: -22px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.4);
+  animation: pulseRing 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.8;
+  }
+  80%, 100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* ── Vessel Marker Popup ── */
+.leaflet-popup-content-wrapper {
+  background: rgba(15, 15, 26, 0.94) !important;
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(99, 102, 241, 0.3) !important;
+  border-radius: 12px !important;
+  color: #e0e7ff !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(15, 15, 26, 0.94) !important;
+}
+
+.popup-content {
+  padding: 12px 14px;
+  min-width: 180px;
+}
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.popup-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #818cf8;
+}
+
+.popup-time {
+  font-size: 10px;
+  color: rgba(224, 231, 255, 0.5);
+}
+
+.popup-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.popup-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.popup-label {
+  color: rgba(165, 180, 252, 0.6);
+}
+
+.popup-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* ── Custom Zoom Controls (top-right) ── */
+.custom-zoom-controls {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: rgba(15, 15, 26, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.zoom-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(224, 231, 255, 0.85);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.zoom-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.zoom-btn:hover {
+  background: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+}
+
+.zoom-btn:active {
+  background: rgba(99, 102, 241, 0.3);
+  transform: scale(0.92);
+}
+
+.zoom-divider {
+  height: 1px;
+  margin: 2px 6px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Override default Leaflet zoom control styling ── */
+.leaflet-control-zoom {
+  display: none !important;
+}
+
+/* ── Override Leaflet attribution styling ── */
+.leaflet-control-attribution {
+  background: rgba(15, 15, 26, 0.7) !important;
+  backdrop-filter: blur(8px);
+  color: rgba(255, 255, 255, 0.35) !important;
+  border-radius: 6px 0 0 0 !important;
+  padding: 3px 8px !important;
+  font-size: 10px !important;
+  border: none !important;
+}
+
+.leaflet-control-attribution a {
+  color: rgba(165, 180, 252, 0.5) !important;
+}
+
+.leaflet-control-attribution a:hover {
+  color: rgba(165, 180, 252, 0.8) !important;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .coordinate-display {
+    bottom: 10px;
+    left: 10px;
+    padding: 6px 10px;
+    gap: 8px;
+  }
+
+  .coord-value {
+    font-size: 12px;
+  }
+
+  .map-info-panel {
+    top: 10px;
+    left: 10px;
+    padding: 8px 10px;
+  }
+
+  .location-control-group {
+    top: 10px;
+    right: 54px;
+  }
+
+  .custom-zoom-controls {
+    top: 10px;
+    right: 10px;
+  }
+
+  .zoom-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .location-info-panel {
+    bottom: 60px;
+    right: 10px;
+    width: calc(100% - 20px);
+  }
+}
