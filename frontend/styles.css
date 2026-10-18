@@ -4,8 +4,6 @@
   padding: 0;
 }
 
-
-
 #root {
   height: 100vh;
   display: flex;
@@ -18,16 +16,12 @@
   background-color: #f3e4d7;
 }
 
-
-
 /* height of the container */
 .leaflet-container {
   height: 90vh;
   width: 90%;
   border-radius: 2rem;
 }
-
-
 
 .cluster-icon {
   background-color: #333;
